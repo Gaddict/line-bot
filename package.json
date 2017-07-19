@@ -32,6 +32,10 @@
     "type": "git",
     "url": "git://github.com/kosuke-sano/line-bot.git"
   },
+  "engines": {
+    "node": "6.11.1",
+    "npm":  "5.3.0"
+  },
   "author": "kosuke-sano",
   "license": ""
 }
