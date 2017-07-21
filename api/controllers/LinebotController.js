@@ -14,6 +14,8 @@ module.exports = {
             channelSecret: process.env.CHANNEL_SECRET
         };
 
+        console.log(config);
+
         Promise
         .all(req.body.events.map(handleEvent))
         .then((result) => res.json(result));
