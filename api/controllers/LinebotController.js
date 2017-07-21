@@ -53,7 +53,7 @@ const client = (replyToken, SendMessageObject) => {
             'Content-Type': 'application/json; charset=UTF-8',
             'X-Line-Signature': SIGNATURE,
             'Authorization': `Bearer ${CH_ACCESS_TOKEN}`,
-            'Content-Length': Buffer.byteLength(postDataStr)
+            'Content-Length': Buffer.byteLength(JSON.stringify(postDataStr))
         },
         body: postDataStr,
         json: true,
