@@ -13,7 +13,8 @@ module.exports = {
         
         function handleEvent(event) {
             if (event.type !== 'message' || event.message.type !== 'text') {
-                return Promise.resolve('callback');
+                console.log(event);
+                return Promise.resolve(null);
             }
 
             const line = require('@line/bot-sdk');
