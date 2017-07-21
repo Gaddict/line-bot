@@ -27,10 +27,14 @@ module.exports = {
 
             const client = new line.Client(config);
 
-            return client.replyMessage(event.replyToken, {
+            const reply = client.replyMessage(event.replyToken, {
                 type: 'text',
                 text: event.message.text
             });
+
+            console.log(reply);
+
+            return reply;
         }
     },
 };
