@@ -16,8 +16,6 @@ const SIGNATURE = crypto.createHmac('sha256', CH_SECRET);
 
 module.exports = {
     callback: function (req, res) {
-        console.log(req);
-
         let body = '';
 
         req.on('data', (chunk) => {
