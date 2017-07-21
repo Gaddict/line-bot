@@ -12,8 +12,9 @@ module.exports = {
         .then((result) => res.json(result));
         
         function handleEvent(event) {
+            console.log(event);
+
             if (event.type !== 'message' && event.message.type !== 'text') {
-                console.log(event);
                 return Promise.resolve(null);
             }
 
