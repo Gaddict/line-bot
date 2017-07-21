@@ -17,12 +17,12 @@ const client = new line.Client(config);
 const middleware = line.middleware(config);
 
 module.exports = {
-    callback: function (req, res) {
-        middleware(req, res)
-        .all(req.body.events.map(handleEvent))
-        .then((result) => {
-            res.json(result);
-        });
+    callback: function (req, res, err) {
+        middleware(req, res, (req, res) => {
+            Promise
+            .all(req.body.events.map(handleEvent))
+            .then((result) => res.json(result));
+        })
     }
 };
 
@@ -32,7 +32,7 @@ function handleEvent(event) {
     if (event.type !== 'message' && event.message.type !== 'text') {
         return Promise.resolve(null);
     }
-    
+
     return client.replyMessage(event.replyToken, {
         type: 'text',
         text: event.message.text
