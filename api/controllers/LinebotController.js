@@ -16,42 +16,27 @@ const SIGNATURE = crypto.createHmac('sha256', CH_SECRET);
 
 module.exports = {
     callback: function (req, res) {
-        let body = '';
+        let WebhookEventObject = req.body.events[0];
 
-        req.on('data', (chunk) => {
-            body += chunk;
-            console.log('body');
-            console.log(body);
-        });
+        console.log('WebhookEventObject');
+        console.log(WebhookEventObject);
 
-        req.on('end', () => {
-            if(body === ''){
-              console.log('bodyが空です。');
-              return;
+        //メッセージが送られて来た場合
+        if(WebhookEventObject.type === 'message'){
+            let SendMessageObject;
+            if(WebhookEventObject.message.type === 'text'){
+                SendMessageObject = [{
+                    type: 'text',
+                    text: WebhookEventObject.message.text
+                }];
             }
-    
-            let WebhookEventObject = JSON.parse(body).events[0];
+            client(WebhookEventObject.replyToken, SendMessageObject)
+            .then((body)=>{
+                console.log(body);
+            },(e)=>{console.log(e)});
+        }
 
-            console.log(WebhookEventObject);
-
-            //メッセージが送られて来た場合
-            if(WebhookEventObject.type === 'message'){
-                let SendMessageObject;
-                if(WebhookEventObject.message.type === 'text'){
-                    SendMessageObject = [{
-                        type: 'text',
-                        text: WebhookEventObject.message.text
-                    }];
-                }
-                client(WebhookEventObject.replyToken, SendMessageObject)
-                .then((body)=>{
-                    console.log(body);
-                },(e)=>{console.log(e)});
-            }
-
-            res.writeHead(200, {'Content-Type': 'text/plain'});
-            res.end('su');
-        });
+        res.writeHead(200, {'Content-Type': 'text/plain'});
     }
 };
 
