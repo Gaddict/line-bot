@@ -20,6 +20,8 @@ module.exports = {
 
         req.on('data', (chunk) => {
             body += chunk;
+            console.log('body');
+            console.log(body);
         });
 
         req.on('end', () => {
