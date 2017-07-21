@@ -46,9 +46,8 @@ module.exports = {
 const client = (replyToken, SendMessageObject) => {    
     let postDataStr = JSON.stringify({ replyToken: replyToken, messages: SendMessageObject });
     let options = {
-        host: HOST,
+        url: 'https://' + HOST + REPLY_PATH,
         port: 443,
-        path: REPLY_PATH,
         method: 'POST',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
