@@ -5,6 +5,7 @@
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
+    "@line/bot-sdk": "^2.0.0",
     "ejs": "2.3.4",
     "grunt": "1.0.1",
     "grunt-contrib-clean": "1.0.0",
@@ -34,7 +35,7 @@
   },
   "engines": {
     "node": "8.1.4",
-    "npm":  "5.3.0"
+    "npm": "5.3.0"
   },
   "author": "kosuke-sano",
   "license": ""
