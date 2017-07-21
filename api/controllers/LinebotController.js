@@ -5,7 +5,7 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
-const https = require('https');
+var request = require('request');
 const crypto = require('crypto');
 
 const HOST = 'api.line.me'; 
@@ -36,7 +36,7 @@ module.exports = {
             },(e)=>{console.log(e)});
         }
 
-        res.writeHead(200, {'Content-Type': 'text/plain'});
+        return res.send('OK');
     }
 };
 
@@ -56,6 +56,8 @@ const client = (replyToken, SendMessageObject) => {
             'Authorization': `Bearer ${CH_ACCESS_TOKEN}`,
             'Content-Length': Buffer.byteLength(postDataStr)
         },
+        body: postDataStr,
+        json: true,
         proxy: process.env.FIXIE_URL
     };
 
@@ -66,21 +68,29 @@ const client = (replyToken, SendMessageObject) => {
     console.log(postDataStr);
 
     return new Promise((resolve, reject) => {
-        let req = https.request(options, (res) => {
-                    let body = '';
-                    res.setEncoding('utf8');
-                    res.on('data', (chunk) => {
-                        body += chunk;
-                    });
-                    res.on('end', () => {
-                        resolve(body);
-                    });
+        // let req = https.request(options, (res) => {
+        //             let body = '';
+        //             res.setEncoding('utf8');
+        //             res.on('data', (chunk) => {
+        //                 body += chunk;
+        //             });
+        //             res.on('end', () => {
+        //                 resolve(body);
+        //             });
+        // });
+
+        request.post(options, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                console.log(body);
+            } else {
+                console.log('error: '+ JSON.stringify(response));
+            }
         });
 
-        req.on('error', (e) => {
-            reject(e);
-        });
-        req.write(postDataStr);
-        req.end();
+        // req.on('error', (e) => {
+        //     reject(e);
+        // });
+        // req.write(postDataStr);
+        // req.end();
     });
 };
