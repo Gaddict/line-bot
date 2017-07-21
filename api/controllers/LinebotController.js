@@ -44,7 +44,7 @@ module.exports = {
  * httpリクエスト部分
  */
 const client = (replyToken, SendMessageObject) => {    
-    let postDataStr = JSON.stringify({ replyToken: replyToken, messages: SendMessageObject });
+    let postDataStr = { replyToken: replyToken, messages: SendMessageObject };
     let options = {
         url: 'https://' + HOST + REPLY_PATH,
         port: 443,
