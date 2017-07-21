@@ -16,6 +16,8 @@ const SIGNATURE = crypto.createHmac('sha256', CH_SECRET);
 
 module.exports = {
     callback: function (req, res) {
+        console.log(req);
+
         let body = '';
 
         req.on('data', (chunk) => {
@@ -28,7 +30,10 @@ module.exports = {
               return;
             }
     
-            let WebhookEventObject = JSON.parse(body).events[0];        
+            let WebhookEventObject = JSON.parse(body).events[0];
+
+            console.log(WebhookEventObject);
+
             //メッセージが送られて来た場合
             if(WebhookEventObject.type === 'message'){
                 let SendMessageObject;
