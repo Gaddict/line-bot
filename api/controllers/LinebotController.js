@@ -5,37 +5,85 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
-const line = require('@line/bot-sdk');
+const https = require('https');
+const crypto = require('crypto');
 
-const config = {
-    channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
-    channelSecret: process.env.CHANNEL_SECRET
-};
-
-const client = new line.Client(config);
-
-const middleware = line.middleware(config);
+const HOST = 'api.line.me'; 
+const REPLY_PATH = '/v2/bot/message/reply';//リプライ用
+const CH_SECRET = process.env.CHANNEL_SECRET; //Channel Secretを指定
+const CH_ACCESS_TOKEN = process.env.CHANNEL_ACCESS_TOKEN; //Channel Access Tokenを指定
+const SIGNATURE = crypto.createHmac('sha256', CH_SECRET);
 
 module.exports = {
-    callback: function (req, res, err) {
-        middleware(req, res, (req, res) => {
-            Promise
-            .all(req.body.events.map(handleEvent))
-            .then((result) => res.json(result));
-        })
+    callback: function (req, res) {
+        let body = '';
+
+        req.on('data', (chunk) => {
+            body += chunk;
+        });
+
+        req.on('end', () => {
+            if(body === ''){
+              console.log('bodyが空です。');
+              return;
+            }
+    
+            let WebhookEventObject = JSON.parse(body).events[0];        
+            //メッセージが送られて来た場合
+            if(WebhookEventObject.type === 'message'){
+                let SendMessageObject;
+                if(WebhookEventObject.message.type === 'text'){
+                    SendMessageObject = [{
+                        type: 'text',
+                        text: WebhookEventObject.message.text
+                    }];
+                }
+                client(WebhookEventObject.replyToken, SendMessageObject)
+                .then((body)=>{
+                    console.log(body);
+                },(e)=>{console.log(e)});
+            }
+
+            res.writeHead(200, {'Content-Type': 'text/plain'});
+            res.end('su');
+        });
     }
 };
 
-function handleEvent(event) {
-    console.log(event);
+/**
+ * httpリクエスト部分
+ */
+const client = (replyToken, SendMessageObject) => {    
+    let postDataStr = JSON.stringify({ replyToken: replyToken, messages: SendMessageObject });
+    let options = {
+        host: HOST,
+        port: 443,
+        path: REPLY_PATH,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'X-Line-Signature': SIGNATURE,
+            'Authorization': `Bearer ${CH_ACCESS_TOKEN}`,
+            'Content-Length': Buffer.byteLength(postDataStr)
+        }
+    };
 
-    if (event.type !== 'message' && event.message.type !== 'text') {
-        return Promise.resolve(null);
-    }
+    return new Promise((resolve, reject) => {
+        let req = https.request(options, (res) => {
+                    let body = '';
+                    res.setEncoding('utf8');
+                    res.on('data', (chunk) => {
+                        body += chunk;
+                    });
+                    res.on('end', () => {
+                        resolve(body);
+                    });
+        });
 
-    return client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: event.message.text
+        req.on('error', (e) => {
+            reject(e);
+        });
+        req.write(postDataStr);
+        req.end();
     });
-}
-
+};
