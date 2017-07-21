@@ -21,26 +21,21 @@ module.exports = {
         middleware(req, res)
         .all(req.body.events.map(handleEvent))
         .then((result) => {
-            console.log(`result : ${result}`);
-            return res.json(result);
+            res.json(result);
         });
     }
 };
 
 function handleEvent(event) {
-    console.log(`event : ${event}`);
+    console.log(event);
 
     if (event.type !== 'message' && event.message.type !== 'text') {
         return Promise.resolve(null);
     }
-
-    const reply = client.replyMessage(event.replyToken, {
+    
+    return client.replyMessage(event.replyToken, {
         type: 'text',
         text: event.message.text
     });
-
-    console.log(`reply : ${reply}`);
-
-    return reply;
 }
 
