@@ -9,10 +9,13 @@ module.exports = {
     callback: function (req, res) {
         Promise
         .all(req.body.events.map(handleEvent))
-        .then((result) => res.json(result));
+        .then((result) => {
+            console.log(`result : ${result}`);
+            return res.json(result);
+        });
         
         function handleEvent(event) {
-            console.log(event);
+            console.log(`event : ${event}`);
 
             if (event.type !== 'message' && event.message.type !== 'text') {
                 return Promise.resolve(null);
@@ -32,7 +35,7 @@ module.exports = {
                 text: event.message.text
             });
 
-            console.log(reply);
+            console.log(`reply : ${reply}`);
 
             return reply;
         }
