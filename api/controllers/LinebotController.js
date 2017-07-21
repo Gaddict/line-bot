@@ -7,6 +7,13 @@
 
 const https = require('https');
 const crypto = require('crypto');
+const tunnel = require('tunnel');
+const tunnelAg = tunnel.httpsOverHttp({
+    proxy: {
+        host: process.env.FIXIE_URL,
+        port: 80
+    }
+});
 
 const HOST = 'api.line.me'; 
 const REPLY_PATH = '/v2/bot/message/reply';//リプライ用
@@ -55,7 +62,8 @@ const client = (replyToken, SendMessageObject) => {
             'X-Line-Signature': SIGNATURE,
             'Authorization': `Bearer ${CH_ACCESS_TOKEN}`,
             'Content-Length': Buffer.byteLength(postDataStr)
-        }
+        },
+        agent: tunnelAg
     };
 
     console.log('options');
