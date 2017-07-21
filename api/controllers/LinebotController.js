@@ -58,6 +58,9 @@ const client = (replyToken, SendMessageObject) => {
         }
     };
 
+    console.log('options');
+    console.log(options);
+
     return new Promise((resolve, reject) => {
         let req = https.request(options, (res) => {
                     let body = '';
