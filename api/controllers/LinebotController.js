@@ -5,7 +5,7 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
-var request = require('request');
+const request = require('request');
 const crypto = require('crypto');
 
 const HOST = 'api.line.me'; 
