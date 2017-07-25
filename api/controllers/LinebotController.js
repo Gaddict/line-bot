@@ -67,17 +67,6 @@ const client = (replyToken, SendMessageObject) => {
     console.log(postDataStr);
 
     return new Promise((resolve, reject) => {
-        // let req = https.request(options, (res) => {
-        //             let body = '';
-        //             res.setEncoding('utf8');
-        //             res.on('data', (chunk) => {
-        //                 body += chunk;
-        //             });
-        //             res.on('end', () => {
-        //                 resolve(body);
-        //             });
-        // });
-
         request.post(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 console.log(body);
@@ -85,11 +74,5 @@ const client = (replyToken, SendMessageObject) => {
                 console.log('error: '+ JSON.stringify(response));
             }
         });
-
-        // req.on('error', (e) => {
-        //     reject(e);
-        // });
-        // req.write(postDataStr);
-        // req.end();
     });
 };
