@@ -69,9 +69,9 @@ const client = (replyToken, SendMessageObject) => {
     return new Promise((resolve, reject) => {
         request.post(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                console.log(body);
+                resolve(body);
             } else {
-                console.log('error: '+ JSON.stringify(response));
+                reject(response);
             }
         });
     });
